@@ -757,9 +757,9 @@ seqSitesm1delete1 = seqSites;
 
 
 
- ExprPredictor* predictor2 = new ExprPredictor(seqSitesb, bindingData, seqSites, seqLengths, exprData2, motifs, factorExprData,
+ ExprPredictor* predictor2 = new ExprPredictor(seqSitesb, bindingData, seqSites, seqLengths, exprData, motifs, factorExprData,
      intFunc, coopMat, actIndicators, maxContact, repIndicators, repressionMat, repressionDistThr, mmm, mmmr, indicator_bool3,
-      anny, exprFile2, seqSitesbot, seqSitesm1,seqSitesm2, seqSitesf2 ,seqSitesbotf2, seqSitesm1f2 ,seqSitesm2f2, seqSitesf3,
+      anny, exprFile, seqSitesbot, seqSitesm1,seqSitesm2, seqSitesf2 ,seqSitesbotf2, seqSitesm1f2 ,seqSitesm2f2, seqSitesf3,
        seqSitesbotf3,seqSitesm1f3, seqSitesm2f3 );  //520
 
 rval = readSequences( adamiFile, ExprPredictor::seqsy, ExprPredictor::seqNmes );
