@@ -31,7 +31,15 @@ bool parseConfigFile(const string& configFile, map<string, string>& config) {
         size_t pos = line.find('=');
         if (pos != string::npos) {
             string key = trim(line.substr(0, pos));
-            string value = trim(line.substr(pos + 1));
+            string value = line.substr(pos + 1);
+            
+            // Remove inline comments
+            size_t comment_pos = value.find('#');
+            if (comment_pos != string::npos) {
+                value = value.substr(0, comment_pos);
+            }
+            value = trim(value);
+            
             config[key] = value;
         }
     }
@@ -555,7 +563,7 @@ vector< vector< SiteVec > > seqSitesb( seqs2.size() );  // shouldn't this be seq
 	const gsl_rng_type * T = gsl_rng_default;	// create rng type
 	rng = gsl_rng_alloc( T );
 	// gsl_rng_set( rng, time( 0 ) );		// set the seed equal to simulTime(0)
- 	gsl_rng_set( rng, 123 );
+ 	gsl_rng_set( rng, 1233 );
  //   cout << "training values of parameters on variable sites" << endl;
 (*predictor).clasvar = 1;
 predictor->objFuncborder(  par_init );
