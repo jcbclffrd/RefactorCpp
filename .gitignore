@@ -1,0 +1,20 @@
+# Ignore everything by default
+
+
+# But don't ignore the Makefile
+!Makefile
+
+# Don't ignore the C++ source and header files used by the Makefile
+!Tools.cpp
+!Tools.h
+!ExprPredictor.cpp
+!ExprPredictor.h
+!seq2exp.cpp
+
+# Don't ignore cross-validation related files
+!create_cvcc_data.cpp
+!run_run_CV.sh
+!run1.CV.sh
+
+# Don't ignore this .gitignore file itself
+!.gitignore
