@@ -1,4 +1,4 @@
-# Configuration File Support for seq2exp
+# Configuration File Support for seq2exp, built with github copilot coding agent
 
 ## Overview
 
@@ -110,5 +110,3 @@ outputFile = out.txt
 ## Provided Files
 
 - `seq2exp.conf` - Basic configuration file with common parameters
-- `seq2exp_full.conf` - Complete configuration file with all available parameters
-- `run_with_config.sh` - Example script showing different usage methods
