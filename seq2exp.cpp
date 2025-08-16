@@ -401,7 +401,7 @@ int main( int argc, char* argv[] )
     gsl_rng_env_setup();
     const gsl_rng_type * T = gsl_rng_default;	
     rng = gsl_rng_alloc( T );
-    gsl_rng_set( rng, time( 0 ) );		
+    gsl_rng_set( rng, 12345 );		
     (*predictor).clasvar = 1;
     predictor->objFuncborder(  par_init );
     double obj = predictor->getObj();
