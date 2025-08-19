@@ -18,3 +18,19 @@
 
 # Don't ignore this .gitignore file itself
 !.gitignore
+
+# Don't ignore documentation and repository config files
+!README.md
+!seq2exp.conf
+!scriptse.sh
+!plot.tex
+!plot.pdf
+!format.tex
+
+# Don't ignore input data directory
+!iData/
+!iData/*
+
+# Don't ignore .github directory  
+!.github/
+!.github/*
