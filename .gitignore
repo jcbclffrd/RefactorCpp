@@ -25,7 +25,13 @@
 !scriptse.sh
 !plot.tex
 !plot.pdf
-!format.tex
+
+# Ignore build artifacts and output files (even though we ignore everything by default, be explicit)
+*.o
+seq2exp
+ot*.txt
+pars*.txt
+format.tex
 
 # Don't ignore input data directory
 !iData/
