@@ -19,7 +19,7 @@ from pydantic import BaseModel, Field
 
 
 # Configuration
-WORKING_DIR = "/home/runner/work/MPA/MPA"
+WORKING_DIR = "/home/j/MPA"
 SEQ2EXP_EXECUTABLE = f"{WORKING_DIR}/seq2exp"
 SCRIPT_SE_PATH = f"{WORKING_DIR}/scriptse.sh"
 DEFAULT_CONFIG_PATH = f"{WORKING_DIR}/seq2exp.conf"
