@@ -1,0 +1,37 @@
+name: Server Up and Down Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9
+
+    - name: Install system dependencies
+      run: sudo apt-get update && sudo apt-get install -y libgsl-dev
+
+    - name: Install Python dependencies
+      run: pip3 install -r requirements_mcp.txt
+
+    - name: Start MCP server
+      run: nohup python3 seq2exp_mcp_server.py &
+
+    - name: Run comprehensive test
+      run: python3 comprehensive_test.py
+
+    - name: Stop MCP server
+      run: pkill -f seq2exp_mcp_server.py || true
