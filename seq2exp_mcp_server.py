@@ -284,9 +284,11 @@ class Seq2ExpExecutor:
             if process.returncode == 0 and os.path.exists(plot_pdf_path):
                 return plot_pdf_path
             else:
+                # PDF generation failed, but don't treat as fatal error
                 return None
                 
         except (asyncio.TimeoutError, Exception):
+            # PDF generation failed, but don't treat as fatal error
             return None
 
 
