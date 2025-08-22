@@ -9,8 +9,17 @@ import json
 import time
 import aiohttp
 import os
+import subprocess
 
 SERVER_URL = "http://localhost:8083"
+
+# Ensure dependencies are installed
+requirements_file = "requirements_mcp.txt"
+if os.path.exists(requirements_file):
+    print(f"Installing dependencies from {requirements_file}...")
+    subprocess.run(["pip3", "install", "-r", requirements_file], check=True)
+else:
+    print(f"Warning: {requirements_file} not found. Skipping dependency installation.")
 
 async def comprehensive_test():
     """Complete test of all MCP server functionality"""
