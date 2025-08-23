@@ -7,8 +7,7 @@ version: 2
 updates:
   - package-ecosystem: "" # See documentation for possible values
     directory: "/" # Location of package manifests
-    schedule:
-      interval: "daily"
-      time: "00:00"
-      cron: "*/1 * * * *"
+schedule:
+  interval: "daily"
+  time: "00:00"
  
