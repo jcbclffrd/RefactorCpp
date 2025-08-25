@@ -274,6 +274,8 @@ mcp = FastMCP(
 )
 
 
+# Define tools using decorator syntax
+@mcp.tool
 async def seq2exp_predict_impl(config_content: str) -> Dict[str, Any]:
     """
     Main seq2exp prediction tool.
@@ -295,6 +297,7 @@ async def seq2exp_predict_impl(config_content: str) -> Dict[str, Any]:
         }
 
 
+@mcp.tool
 async def seq2exp_validate_config_impl(config_content: str) -> Dict[str, Any]:
     """
     Validate seq2exp configuration.
@@ -315,6 +318,7 @@ async def seq2exp_validate_config_impl(config_content: str) -> Dict[str, Any]:
         }
 
 
+@mcp.tool
 async def seq2exp_config_template_impl() -> Dict[str, Any]:
     """
     Get default seq2exp configuration template.
@@ -336,6 +340,7 @@ async def seq2exp_config_template_impl() -> Dict[str, Any]:
         }
 
 
+@mcp.tool
 async def seq2exp_get_results_impl() -> Dict[str, Any]:
     """
     Get latest seq2exp results from output files.
@@ -362,12 +367,6 @@ async def seq2exp_get_results_impl() -> Dict[str, Any]:
             "error": str(e)
         }
 
-
-# Register the functions as MCP tools
-mcp.tool(seq2exp_predict_impl, name="seq2exp_predict")
-mcp.tool(seq2exp_validate_config_impl, name="seq2exp_validate_config") 
-mcp.tool(seq2exp_config_template_impl, name="seq2exp_config_template")
-mcp.tool(seq2exp_get_results_impl, name="seq2exp_get_results")
 
 
 if __name__ == "__main__":
