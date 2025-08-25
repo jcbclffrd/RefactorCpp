@@ -46,6 +46,15 @@ ot*.txt
 pars*.txt
 format.tex
 
+# Ignore LaTeX build artifacts
+*.aux
+*.dvi
+*.log
+*.ps
+
+# Ignore other temporary files
+start_mcp_server.sh
+
 # Don't ignore input data directory
 !iData/
 !iData/*

@@ -33,7 +33,7 @@ fi
 echo "Checking Python dependencies..."
 python3 -c "import fastapi, uvicorn, aiofiles" 2>/dev/null || {
     echo "Installing Python dependencies..."
-    python3 -m pip install fastapi uvicorn aiofiles python-multipart aiohttp
+    python3 -m pip3 install fastapi uvicorn aiofiles python-multipart aiohttp
 }
 
 # Check LaTeX for PDF generation
