@@ -4,15 +4,7 @@
 # Ignore build artifacts
 *.o
 seq2exp
-mcp_demo
 __pycache__/
-# Don't ignore the MCP files
-!mcp_tools.h
-!mcp_tools.cpp
-!mcp_demo.cpp
-!MCP_TOOLS.md
-!mcp_config.json
-!example_usage.sh
 
 # But don't ignore the Makefile
 !Makefile
@@ -45,19 +37,20 @@ seq2exp
 ot*.txt
 pars*.txt
 format.tex
-
+temp_config_*.conf
 # Ignore LaTeX build artifacts
 *.aux
 *.dvi
 *.log
 *.ps
 
-# Ignore other temporary files
-start_mcp_server.sh
-
 # Don't ignore input data directory
 !iData/
 !iData/*
+
+# Don't ignore test directory
+!Tests/
+!Tests/*
 
 # Don't ignore .github directory  
 !.github/
@@ -65,3 +58,17 @@ start_mcp_server.sh
 
 
 h822
+# seq2exp build and output artifacts
+format.tex
+ot.txt
+ot3.txt
+pars2.txt
+pars*.txt
+ot*.txt
+plot.ps
+plot.aux
+plot.dvi
+plot.ps
+plot.log
+comprehensive_test.yml
+server_up_down_test.yml
