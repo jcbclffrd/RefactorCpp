@@ -30,11 +30,14 @@ jobs:
     - name: Install Python dependencies
       run: pip install -r requirements_mcp.txt
 
-    - name: Start MCP server
-      run: nohup python3 seq2exp_mcp_server.py &
+    - name: Build seq2exp executable
+      run: make clean && make
 
-    - name: Run comprehensive test
-      run: python3 comprehensive_test.py
+    - name: Test MCP server tools registration
+      run: python3 test_server_tools.py
 
-    - name: Stop MCP server
-      run: pkill -f seq2exp_mcp_server.py || true
+    - name: Test MCP protocol communication
+      run: python3 test_mcp_stdio.py
+
+    - name: Test MCP tool calls
+      run: python3 comprehensive_test_mcp.py
