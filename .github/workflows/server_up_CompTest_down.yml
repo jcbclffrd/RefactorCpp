@@ -24,7 +24,7 @@ jobs:
     - name: Install system dependencies
       uses: awalsh128/cache-apt-pkgs-action@latest
       with:
-        packages: libgsl-dev build-essential
+        packages: libgsl-dev build-essential libjsoncpp-dev
         version: 1.0
 
     - name: Install Python dependencies
