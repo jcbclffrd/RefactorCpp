@@ -45,7 +45,7 @@ seq2exp
 ot*.txt
 pars*.txt
 format.tex
-
+temp_config_*.conf
 # Ignore LaTeX build artifacts
 *.aux
 *.dvi
@@ -65,3 +65,14 @@ start_mcp_server.sh
 
 
 h822
+# seq2exp build and output artifacts
+format.tex
+ot.txt
+ot3.txt
+pars2.txt
+pars*.txt
+ot*.txt
+plot.ps
+plot.aux
+plot.dvi
+plot.ps
