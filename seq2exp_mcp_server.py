@@ -13,9 +13,7 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 
 import aiofiles
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
-from pydantic import BaseModel, Field
+from fastmcp import FastMCP
 
 
 # Configuration
@@ -24,30 +22,6 @@ WORKING_DIR = os.getenv("WORKING_DIR", os.getcwd())
 SEQ2EXP_EXECUTABLE = f"{WORKING_DIR}/seq2exp"
 SCRIPT_SE_PATH = f"{WORKING_DIR}/scriptse.sh"
 DEFAULT_CONFIG_PATH = f"{WORKING_DIR}/seq2exp.conf"
-
-
-class Seq2ExpRequest(BaseModel):
-    config_content: str = Field(
-        description="Complete seq2exp configuration file content",
-        example="""# seq2exp configuration
-seqFile = iData/rhoseq.txt
-exprFile = iData/rhoexp.tab
-motifFile = iData/factordts.wtmx
-factorExprFile = iData/factorexpdts2s.tab
-factorInfoFile = iData/factorinfodts.txt
-bindingSitesFile = iData/fas.txt
-bindingIntensityFile = iData/topbot2Int.txt
-paramFile = iData/synmyout6
-modelOption = BINS
-objOption = corr
-coopFile = iData/coopdt.txt
-nAlternations = 1
-nRandomStarts = 1
-energyThreshold = 5
-outputFile = out.txt
-dcFile = iData/coreOPT0dc1.txt
-duFile = iData/coreOPT0du1.txt"""
-    )
 
 
 class Seq2ExpConfigManager:
@@ -293,55 +267,61 @@ class Seq2ExpExecutor:
             return None
 
 
-# FastAPI app
-app = FastAPI(
-    title="seq2exp MCP Server",
-    description="Real seq2exp bioinformatics application wrapper with direct config file interface",
+# FastMCP server
+mcp = FastMCP(
+    name="seq2exp MCP Server",
     version="1.0.0"
 )
 
 
-@app.get("/")
-async def root():
-    """Root endpoint with API information"""
-    return {
-        "name": "seq2exp MCP Server",
-        "description": "Real bioinformatics application wrapper for gene expression prediction",
-        "version": "1.0.0",
-        "endpoints": {
-            "predict": "/tools/seq2exp_predict",
-            "validate": "/tools/seq2exp_validate_config", 
-            "template": "/tools/seq2exp_config_template",
-            "results": "/tools/seq2exp_get_results",
-            "pdf": "/results/pdf/{filename}"
-        }
-    }
-
-
-@app.post("/tools/seq2exp_predict")
-async def seq2exp_predict(request: Seq2ExpRequest):
-    """Main seq2exp prediction tool"""
+async def seq2exp_predict_impl(config_content: str) -> Dict[str, Any]:
+    """
+    Main seq2exp prediction tool.
+    
+    Args:
+        config_content: Complete seq2exp configuration file content
+        
+    Returns:
+        Dictionary containing prediction results, execution time, and output files
+    """
     try:
         executor = Seq2ExpExecutor()
-        result = await executor.run_prediction(request.config_content)
+        result = await executor.run_prediction(config_content)
         return result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return {
+            "success": False,
+            "error": str(e)
+        }
 
 
-@app.post("/tools/seq2exp_validate_config")
-async def validate_config(request: Seq2ExpRequest):
-    """Validate seq2exp configuration"""
+async def seq2exp_validate_config_impl(config_content: str) -> Dict[str, Any]:
+    """
+    Validate seq2exp configuration.
+    
+    Args:
+        config_content: seq2exp configuration file content to validate
+        
+    Returns:
+        Dictionary containing validation results and any issues found
+    """
     try:
-        validation_result = Seq2ExpConfigManager.validate_config_content(request.config_content)
+        validation_result = Seq2ExpConfigManager.validate_config_content(config_content)
         return validation_result
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return {
+            "valid": False,
+            "error": str(e)
+        }
 
 
-@app.get("/tools/seq2exp_config_template")
-async def get_config_template():
-    """Get default seq2exp configuration template"""
+async def seq2exp_config_template_impl() -> Dict[str, Any]:
+    """
+    Get default seq2exp configuration template.
+    
+    Returns:
+        Dictionary containing the default configuration template and usage instructions
+    """
     try:
         template = await Seq2ExpConfigManager.get_default_config()
         
@@ -351,12 +331,18 @@ async def get_config_template():
             "usage": "Copy this template and modify the parameters for your specific analysis"
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return {
+            "error": str(e)
+        }
 
 
-@app.get("/tools/seq2exp_get_results")
-async def get_latest_results():
-    """Get latest seq2exp results from output files"""
+async def seq2exp_get_results_impl() -> Dict[str, Any]:
+    """
+    Get latest seq2exp results from output files.
+    
+    Returns:
+        Dictionary containing the latest results and PDF availability information
+    """
     try:
         executor = Seq2ExpExecutor()
         results = await executor._parse_seq2exp_output()
@@ -368,23 +354,22 @@ async def get_latest_results():
         return {
             "results": results,
             "pdf_available": pdf_available,
-            "pdf_url": "/results/pdf/plot.pdf" if pdf_available else None,
+            "pdf_path": plot_pdf_path if pdf_available else None,
             "timestamp": time.time()
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        return {
+            "error": str(e)
+        }
 
 
-@app.get("/results/pdf/{filename}")
-async def get_pdf(filename: str):
-    """Serve generated PDF files"""
-    pdf_path = f"{WORKING_DIR}/{filename}"
-    if os.path.exists(pdf_path) and filename.endswith('.pdf'):
-        return FileResponse(pdf_path, media_type="application/pdf", filename=filename)
-    else:
-        raise HTTPException(status_code=404, detail="PDF not found")
+# Register the functions as MCP tools
+mcp.tool(seq2exp_predict_impl, name="seq2exp_predict")
+mcp.tool(seq2exp_validate_config_impl, name="seq2exp_validate_config") 
+mcp.tool(seq2exp_config_template_impl, name="seq2exp_config_template")
+mcp.tool(seq2exp_get_results_impl, name="seq2exp_get_results")
 
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8083)
+    # Run the MCP server using stdio transport for Claude Desktop compatibility
+    asyncio.run(mcp.run_stdio_async())
