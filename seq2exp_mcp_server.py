@@ -189,7 +189,7 @@ class Seq2ExpExecutor:
         results = {}
         
         # Parse ot.txt (main output file with binding weights)
-        ot_path = f"{self.working_dir}/ot.txt"
+        ot_path = f"{self.working_dir}/oData/ot.txt"
         if os.path.exists(ot_path):
             try:
                 async with aiofiles.open(ot_path, 'r') as f:
@@ -219,7 +219,7 @@ class Seq2ExpExecutor:
         
         # Parse other output files if they exist
         for filename in ["ot3.txt", "pars2.txt"]:
-            file_path = f"{self.working_dir}/{filename}"
+            file_path = f"{self.working_dir}/oData/{filename}"
             if os.path.exists(file_path):
                 try:
                     async with aiofiles.open(file_path, 'r') as f:
@@ -233,7 +233,7 @@ class Seq2ExpExecutor:
     
     async def _generate_pdf(self) -> Optional[str]:
         """Run scriptse.sh to convert format.tex to plot.pdf"""
-        format_tex_path = f"{self.working_dir}/format.tex"
+        format_tex_path = f"{self.working_dir}/oData/format.tex"
         script_path = SCRIPT_SE_PATH
         
         if not os.path.exists(format_tex_path):

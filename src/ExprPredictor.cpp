@@ -2785,7 +2785,7 @@ for(int i =0; i < nFactors(); i++){
 }
 os << endl << "objective function : " << endl;
 os << jRMSE.getObj() << endl;
-ofstream fo( "format.tex",ios::app );
+ofstream fo( "oData/format.tex",ios::app );
 int j=0;
 cout << seqSites.size() << endl;
 vector< Site > tsites(0);
@@ -2929,7 +2929,7 @@ for(int i =0; i < nFactors(); i++){
 }
 os << endl << "objective function : " << endl;
 os << jRMSE.getObj() << endl;
-ofstream fo( "format.tex",ios::app );
+ofstream fo( "oData/format.tex",ios::app );
 int j=0;
 cout << seqSites.size() << endl;
 vector< Site > tsites;
@@ -3104,7 +3104,7 @@ for(int i =0; i < nFactors(); i++){
 }
 os << endl << "objective function : " << endl;
 os << jRMSE.getObj() << endl;
-ofstream fo( "format.tex",ios::app );
+ofstream fo( "oData/format.tex",ios::app );
 int j=0;
 vector< Site > tsites;
 vector< Site > tsitesbot;
@@ -3763,7 +3763,7 @@ for(int i =0; i < nFactors(); i++){
 }
 os << endl << "objective function : " << endl;
 os << jRMSE.getObj() << endl;
-ofstream fo( "format.tex",ios::app );
+ofstream fo( "oData/format.tex",ios::app );
 int j=0;
 vector< Site > tsites;
 vector< Site > tsitesbot;
@@ -4082,7 +4082,7 @@ for(int i =0; i < nFactors(); i++){
 }
 os << endl << "objective function : " << endl;
 os << jRMSE.getObj() << endl;
-ofstream fo( "format.tex",ios::app );
+ofstream fo( "oData/format.tex",ios::app );
 int j=0;
 vector< Site > tsites;
 vector< Site > tsitesbot;
@@ -5020,7 +5020,7 @@ for(int i =0; i < nFactors(); i++){
 os << endl << "objective function : " << endl;
 os << jRMSE.getObj() << endl;
 os.close();
-ofstream fo( "format.tex",ios::app );
+ofstream fo( "oData/format.tex",ios::app );
 int j=0;
 vector< Site > tsites;
 vector< Site > tsitesbot;
@@ -5493,7 +5493,7 @@ for(int i =0; i < nFactors(); i++){
 }
 os << endl << "objective function : " << endl;
 os << jRMSE.getObj() << endl;
-ofstream fo( "format.tex",ios::app );
+ofstream fo( "oData/format.tex",ios::app );
 int j=0;
 vector< Site > tsites;
 vector< Site > tsitesbot;
