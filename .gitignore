@@ -56,6 +56,10 @@ temp_config_*.conf
 !.github/
 !.github/*
 
+# Don't ignore src directory
+!src/
+!src/*
+
 
 h822
 # seq2exp build and output artifacts

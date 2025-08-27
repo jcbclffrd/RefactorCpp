@@ -4,6 +4,14 @@
 
 The seq2exp program now supports configuration files in addition to command line arguments. This makes it easier to manage complex parameter sets and run repeated experiments with the same configuration.
 
+## Building from Source
+
+1. Navigate to the source directory: `cd src`
+2. Build the executable: `make clean && make`
+3. Copy executable to root: `cp seq2exp ../`
+4. Return to root directory: `cd ..`
+5. Run commands as documented below
+
 ## Usage
 
 ### Using a Config File
