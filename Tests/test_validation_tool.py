@@ -5,15 +5,20 @@ Test validation tool call
 
 import asyncio
 import json
+import os
 import sys
 
 async def test_validation_tool():
     print("Testing validation tool...")
     
     # Start the MCP server
+    # Get the parent directory path (where seq2exp_mcp_server.py is located)
+    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    server_script = os.path.join(parent_dir, "seq2exp_mcp_server.py")
+    
     process = await asyncio.create_subprocess_exec(
-        sys.executable, "../seq2exp_mcp_server.py",
-        cwd="/home/runner/work/MPA/MPA",
+        sys.executable, server_script,
+        cwd=parent_dir,
         stdin=asyncio.subprocess.PIPE,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE

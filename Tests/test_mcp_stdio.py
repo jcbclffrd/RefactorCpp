@@ -6,6 +6,7 @@ This simulates how Claude Desktop would interact with the MCP server
 
 import asyncio
 import json
+import os
 import subprocess
 import sys
 import time
@@ -15,12 +16,16 @@ async def test_mcp_server():
     print("Testing seq2exp MCP server via stdio...")
     
     # Start the MCP server process
+    # Get the parent directory path (where seq2exp_mcp_server.py is located)
+    parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    server_script = os.path.join(parent_dir, "seq2exp_mcp_server.py")
+    
     process = await asyncio.create_subprocess_exec(
-        sys.executable, "../seq2exp_mcp_server.py",
+        sys.executable, server_script,
         stdin=asyncio.subprocess.PIPE,
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
-        cwd=".."  # Run from parent directory where iData is located
+        cwd=parent_dir  # Run from parent directory where iData is located
     )
     
     try:
