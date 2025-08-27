@@ -28,7 +28,9 @@ jobs:
         version: 1.0
 
     - name: Install Python dependencies
-      run: pip install -r requirements_mcp.txt
+      run: |
+        cd ${{ github.workspace }}
+        pip install -r requirements_mcp.txt
 
     - name: Build seq2exp executable
       run: |
