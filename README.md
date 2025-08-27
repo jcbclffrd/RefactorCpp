@@ -12,6 +12,16 @@ The seq2exp program now supports configuration files in addition to command line
 4. Return to root directory: `cd ..`
 5. Run commands as documented below
 
+## Output Organization
+
+The seq2exp program automatically creates an `oData/` directory for all output files to keep the project organized:
+
+- **Output files**: `ot.txt`, `ot3.txt`, `pars2.txt` - Main results and parameters
+- **LaTeX files**: `format.tex` - For generating plots and visualizations  
+- **Generated plots**: `plot.pdf` (when LaTeX processing is available)
+
+This separation keeps the project root clean and makes it easy to manage generated data separately from source code and configuration files.
+
 ## Usage
 
 ### Using a Config File

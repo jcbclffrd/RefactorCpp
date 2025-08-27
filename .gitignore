@@ -60,6 +60,8 @@ temp_config_*.conf
 !src/
 !src/*
 
+# Ignore output data directory (generated files)
+oData/
 
 h822
 # seq2exp build and output artifacts

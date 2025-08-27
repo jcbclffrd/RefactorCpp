@@ -2,6 +2,8 @@
 #include <fstream>
 #include <sstream>
 #include <map>
+#include <sys/stat.h>
+#include <sys/types.h>
 string trim(const string& str) {
     size_t first = str.find_first_not_of(" \t\n\r");
     if (first == string::npos) return "";
@@ -191,6 +193,13 @@ int main( int argc, char* argv[] )
     ExprPredictor::min_delta_f_CrossCorr = 1.0E-10;
     ExprPredictor::nSimplexIters = 3;
     ExprPredictor::nGradientIters = 10;
+    
+    // Create oData directory if it doesn't exist
+    struct stat st = {0};
+    if (stat("oData", &st) == -1) {
+        mkdir("oData", 0700);
+    }
+    
     int rval;
     vector< vector< double > > data;    
     vector< string > labels;    
@@ -430,10 +439,10 @@ int main( int argc, char* argv[] )
     if (improvement < 1e-6) {
     }
     ExprPar::searchOption =  UNCONSTRAINED;
-    ofstream to3("ot3.txt");
+    ofstream to3("oData/ot3.txt");
     to3.close();
     predictor->printPar(predictor->getPar());
-    ofstream fo("pars2.txt");
+    ofstream fo("oData/pars2.txt");
     fo.close();
     seqs.clear();
     seqNames.clear();
@@ -510,7 +519,7 @@ int main( int argc, char* argv[] )
     predictor2->objFuncborder(  par_init );
     predictor2->train( predictor->getPar(), rng);
     // predictor2->train4( predictor2->getPar() );
-    ofstream to("ot.txt");
+    ofstream to("oData/ot.txt");
     try {
         predictor->printFile3c(to,predictor2->getPar(),*predictor);
     } catch (...) {
