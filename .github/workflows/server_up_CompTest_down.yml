@@ -31,7 +31,11 @@ jobs:
       run: pip install -r requirements_mcp.txt
 
     - name: Build seq2exp executable
-      run: make clean && make
+      run: |
+        cd src
+        make clean && make
+        cp seq2exp ../
+        cd ..
 
     - name: Test MCP server tools registration
       run: python3 Tests/test_server_tools.py
