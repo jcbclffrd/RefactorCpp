@@ -3,6 +3,7 @@
 
 # Ignore build artifacts
 *.o
+src/*.o
 seq2exp
 __pycache__/
 
