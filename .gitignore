@@ -6,7 +6,7 @@
 src/*.o
 seq2exp
 __pycache__/
-
+format.txt
 # But don't ignore the Makefile
 !Makefile
 
