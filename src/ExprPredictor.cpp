@@ -3729,40 +3729,7 @@ fo.close();
 }
 void ExprPredictor::printFile3c( ofstream& os, const ExprPar& par , ExprPredictor& jRMSE ) // came from printFile3b above 8/1/2025
 {
-    os.setf( ios::fixed );
-    os.precision( 3 );
-    os << " maxBindingWts : " << endl;
-    if ( estBindingOption ) {
-        for ( int i = 0; i < nFactors(); i++ ) {
-            os << par.maxBindingWts[i] << "\t";
-        }
-    }
-    os << endl<<" txpEffects : "<< endl;
-    for ( int i = 0; i < nFactors(); i++ ) {
-        os << par.txpEffects[i] << "\t";
-    }
-    os << endl<<  " coopertivity : " << endl;
-    for(int i =0; i < nFactors(); i++){
-        for(int j =0; j <= i; j++){
-            if ( coopMat(i,j)){
-                for(int k =0; k < par.theV[i][j].size(); k++) { //  i don't think this should be k less then vij.size...
-                os <<  "\t" << par.theV[i][j][k] ;
-            }
-        }	//<< "\t" << "coopBin" <<"\t" << k << "\t"<<"factor" << i << j <<endl;
-    }
-}
-os<< endl << " quenching : " << endl;
-for(int i =0; i < nFactors(); i++){
-    for(int j =0; j <i; j++){
-        if(repIndicators[i])  { cout << endl;          // why is this cout here 9 13 11
-        for(int k =0; k < ExprPar::nbins ; k++){
-            os <<  "\t" << par.theVr[i][j][k] ;
-        }
-    }
-}
-}
-os << endl << "objective function : " << endl;
-os << jRMSE.getObj() << endl;
+  
 ofstream fo( "oData/format.tex",ios::app );
 int j=0;
 vector< Site > tsites;
@@ -3837,38 +3804,7 @@ else{
 for(int m = 0; m < seqSites.size(); m++ ) {
     tsites = seqSites[m];
     tsitesbot = seqSitesbot[m]  ;
-    ofstream foo( "format.txt",ios::app );
-    foo<< ">" << ExprPredictor::seqNmes[m]  <<endl ;
-    for( int i = 0; i < tsites.size() ; i++ ) {
-        for (;;) {
-            if ( j < tsites[i].start ) { foo << "b"; j++;  }
-            else {//cout << " j = " << j << endl;
-            if( tsites[i].factorIdx == 0 ) { foo << "d"; j++;  break; }  // if two sites start at same position we shouldn't increment j
-            if( tsites[i].factorIdx == 1 ) { foo << "t"; j++ ; break; }  // although j > tsites[i++], hence they'll appear right after one another.
-            if( tsites[i].factorIdx == 2 ) { foo << "s"; j++ ; break; }
-        }// else
-    }
-}
-while( j < ExprPredictor::seqsy[m].size() ) {
-    foo << "b"; j++;
-}
-foo << endl;
-foo<< ">" << ExprPredictor::seqNmes[m] <<"bot" <<endl ;
-for( int i = 0; i < tsitesbot.size() ; i++ ) {
-    for (;;) {
-        if ( j < tsitesbot[i].start ) { foo << "b"; j++;  }
-        else {//cout << " j = " << j << endl;
-        if( tsitesbot[i].factorIdx == 0 ) { foo << "d"; j++;  break; }  // if two sites start at same position we shouldn't increment j
-        if( tsitesbot[i].factorIdx == 1 ) { foo << "t"; j++ ; break; }  // although j > tsites[i++], hence they'll appear right after one another.
-        if( tsitesbot[i].factorIdx == 2 ) { foo << "s"; j++ ; break; }
-    }// else
-}
-}
-while( j < ExprPredictor::seqsy[m].size() ) {
-    foo << "b"; j++;
-}
-foo << endl;
-foo.close();
+    
 j=0;
 int jjj=10000;
 for(int i = 0; i < ExprPredictor::seqsy[m].size(); i++ ) {
