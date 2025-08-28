@@ -3837,7 +3837,7 @@ else{
 for(int m = 0; m < seqSites.size(); m++ ) {
     tsites = seqSites[m];
     tsitesbot = seqSitesbot[m]  ;
-    ofstream foo( "/mnt/c/Users/jcbcl/kfoldhes/format.txt",ios::app );
+    ofstream foo( "format.txt",ios::app );
     foo<< ">" << ExprPredictor::seqNmes[m]  <<endl ;
     for( int i = 0; i < tsites.size() ; i++ ) {
         for (;;) {
@@ -4497,7 +4497,7 @@ cout << "Alldata mat is mxn matrix while AllBorders mat is nxm mat." << endl;
 for(int m = 0; m < seqSites.size(); m++ ) {
     tsites = seqSites[m];
     tsitesbot = seqSitesbot[m]  ;
-    ofstream foo( "/home/jacobc/Desktop/Desktop1026/clustalw/format2.txt",ios::app );
+    ofstream foo( "oData/format2.txt",ios::app );
     foo<< ">" << ExprPredictor::seqNmes[m]  <<endl ;
     for( int i = 0; i < tsites.size() ; i++ ) {
         for (;;) {
