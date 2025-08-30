@@ -412,6 +412,7 @@ int main( int argc, char* argv[] )
     rng = gsl_rng_alloc( T );
     gsl_rng_set( rng, 12345 );		
     (*predictor).clasvar = 1;
+cout<< "out" << endl;
     predictor->objFuncborder(  par_init );
     double obj = predictor->getObj();
     predictor->printPar(predictor->getPar());
@@ -514,16 +515,27 @@ int main( int argc, char* argv[] )
     seqSitesm1f3 = seqSites;
     seqSitesm2f3=seqSites;
     seqSitesm1delete1 = seqSites;
-    ExprPredictor* predictor2 = new ExprPredictor(seqSitesb, bindingData, seqSites, seqLengths, exprData2, motifs, factorExprData, intFunc, coopMat, actIndicators, maxContact, repIndicators, repressionMat, repressionDistThr, mmm, mmmr, indicator_bool3, anny, exprFile2, seqSitesbot, seqSitesm1,seqSitesm2, seqSitesf2 ,seqSitesbotf2, seqSitesm1f2 ,seqSitesm2f2, seqSitesf3, seqSitesbotf3,seqSitesm1f3, seqSitesm2f3 );  
+    ExprPredictor* predictor2 = new ExprPredictor(seqSitesb, bindingData, seqSites, seqLengths, exprData, 
+        motifs, factorExprData, intFunc, coopMat, actIndicators, maxContact, repIndicators, repressionMat, 
+        repressionDistThr, mmm, mmmr, indicator_bool3, anny, exprFile, seqSitesbot, seqSitesm1,seqSitesm2, 
+        seqSitesf2 ,seqSitesbotf2, seqSitesm1f2 ,seqSitesm2f2, seqSitesf3, seqSitesbotf3,seqSitesm1f3,
+         seqSitesm2f3 );  
     rval = readSequences( adamiFile, ExprPredictor::seqsy, ExprPredictor::seqNmes );
-    predictor2->objFuncborder(  par_init );
-    predictor2->train( predictor->getPar(), rng);
+    // predictor2->objFuncborder(  par_init );
+    // predictor2->train( predictor->getPar(), rng);
+    predictor->objFuncborder(  par_init );
+    predictor->train( predictor->getPar(), rng);
     // predictor2->train4( predictor2->getPar() );
     ofstream to("oData/ot.txt");
+    // try {
+    //     predictor->printFile3c(to,predictor2->getPar(),*predictor);
+    // } catch (...) {
+    //     predictor->printPar(predictor2->getPar());
+    // } 
     try {
-        predictor->printFile3c(to,predictor2->getPar(),*predictor);
+        predictor->printFile3c(to,predictor->getPar(),*predictor);
     } catch (...) {
-        predictor->printPar(predictor2->getPar());
+        predictor->printPar(predictor->getPar());
     }
     to.close();
     exit(0);

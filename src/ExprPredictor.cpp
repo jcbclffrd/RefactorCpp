@@ -6090,6 +6090,150 @@ if( corrs != corrs) {
 }
 return mean( corrs );
 }
+
+double ExprPredictor::compAvgCorrborder9(  ExprPar& par ){
+
+    cout << "in compAvgCorrborder9 " << endl; 
+    /*
+     double expmin = .15;
+    double expmax = .65;
+    double bottomofdborder = .15;
+    double topofdborder = .65;
+    vector< int > initint;
+    for ( int ab = 0; ab < nSeqs() ; ab++) {
+        AllBorders.push_back( initint );
+    }
+    par_model = par;
+    AllBorders.clear();
+    AllData.clear();
+    ExprFunc* func = createExprFunc( par );
+    vector< double > corrs;
+    vector< string > rowLabels(0);
+    vector< string > colLabels(0);
+    vector< vector< double > > data(0) ;
+    ifstream fin( file.c_str() );
+    if ( !fin ) {
+        return RET_ERROR;
+    }
+    gsl_rng* rng;
+    gsl_rng_env_setup();
+    const gsl_rng_type * TT = gsl_rng_default;	// create rng type
+    rng = gsl_rng_alloc( TT );
+    gsl_rng_set( rng, 12345 );		// set the seed equal to simulTime(0)
+    double  rand_site_index;	// from ~/C++exercises/Bins/Mscan/wtmx_scanmc1116.cpp
+    rowLabels.clear();
+    colLabels.clear();
+    data.clear();
+    string line, first, label;
+    getline( fin, line );
+    stringstream ss( line );
+    ss >> first;
+    while ( ss >> label ) {
+        colLabels.push_back( label );
+    }
+    while ( !fin.eof() ) {
+        string line;
+        getline( fin, line );
+        if ( line.empty() ) continue;
+        stringstream ss( line );
+        string name;
+        ss >> name;
+        rowLabels.push_back( name );
+        double val;
+        vector< double > vals;
+        while ( ss >> val ){
+            vals.push_back( val  );
+        }// while ss >> val
+        data.push_back( vals );
+    }
+    Matrix data1( data );
+    Matrix f = factorExprData;
+    exprData = data;
+    Matrix e = data;
+    int nrow = exprData.nRows();
+    int ncol =exprData.nCols();
+    cout << " exprData nrows " << nrow << endl;
+    gsl_vector *transition_Indicesb = gsl_vector_alloc(nrow);  // vector that hold the ti for each gene..
+    gsl_vector *transition_Indicest = gsl_vector_alloc(nrow);  // vector that hold the ti for each gene..
+    int tit=1;
+    int tib=1;
+    gsl_vector_set(transition_Indicest, i , tit);  // here ti = NULL
+    gsl_vector_set(transition_Indicesb, i , tib);
+
+    for (int i=0; i<nrow;i++) {
+        vector< double > reD;
+        reD = exprData.getRow(i);
+        int mi;
+        gsl_vector *rowexprData = gsl_vector_alloc(ncol);
+        rowexprData = vector2gsl(reD);
+        mi = gsl_vector_max_index(rowexprData);
+        double m;
+        m = gsl_vector_max(rowexprData);      // the max function starts from the left and works its way to the right (starts with lowest indices)
+        double exptrace;
+        double exppeek;
+        tit = 0;
+        tib =0;
+        if( m < bottomofdborder ) {                           // this is a security check to make sure borders exist
+        gsl_vector_set(transition_Indicest, i , tit);  // here ti = NULL
+        gsl_vector_set(transition_Indicesb, i , tib);
+        break;
+    }
+    else{
+        for (int j=mi; j< ncol; j++)  {
+            exptrace = gsl_vector_get(rowexprData,j);
+            exppeek = gsl_vector_get(rowexprData,j+1);
+            if ( exppeek > topofdborder ) {
+                continue;
+            }
+            else {
+                if( exptrace == exppeek) { continue; }  // peek ahead to make sure trace is not on a saddle point (plateu)
+                if(exppeek < topofdborder ) {
+                    tit =j;
+                    gsl_vector_set(transition_Indicest, i , tit);
+                    int counter=0;
+                    for(;;) {
+                        exptrace = gsl_vector_get(rowexprData,tit+counter);
+                        counter++;
+                        exppeek = gsl_vector_get(rowexprData,tit + counter);
+                        if ( exppeek > bottomofdborder ) {
+                            continue;
+                        }
+                        else {
+                            tib=tit + counter;
+                            gsl_vector_set(transition_Indicesb, i , tib);
+                            break;
+                        }//else
+                    } // for(;;)
+                    int minindex;
+                    minindex = gsl_vector_min_index(rowexprData);
+                    if (tit == 0) {
+                        tit = minindex;            //some sequences are all zero or all the same value, which causes segemtation fault
+                        tib = minindex;
+                        gsl_vector_set(transition_Indicest, i , tit);
+                        gsl_vector_set(transition_Indicesb, i , tib);
+                    }
+                    break;
+                } // if < topofdborder
+            }//  else
+        }// for j
+    }// else
+}// for i
+vector< double > predictedExprs;
+vector< double > observedExprs;
+double totalSim = 0;
+double rms = 0;
+cout << "transitionindicest "<< endl;
+for (int i=0; i<nrow;i++) {
+    cout << endl << gsl_vector_get(transition_Indicest,i) << endl;
+}
+cout << "transitionindicesb " << endl;
+for (int i=0; i<nrow;i++) {
+    cout << endl << gsl_vector_get(transition_Indicesb,i) << endl;
+}
+*/
+    return .5;
+}
+
 double ExprPredictor::compAvgCorrborder8(  ExprPar& par )
 {
     double expmin = .15;
@@ -6294,7 +6438,7 @@ for (int i=0; i<nrow;i++) {
 else{
     for (int j=mi; j< ncol; j++)  {
         exptrace = gsl_vector_get(rowexprData,j);
-        exppeek = gsl_vector_get(rowexprData,j+1);
+        exppeek = gsl_vector_get(rowexprData,j); // removed j+1 to j to see if rhoexp1.tab works
         if ( exppeek > topofdborder ) {
             continue;
         }
@@ -6439,7 +6583,7 @@ for (int i=0; i<nrow;i++) {
 else{
     for (int j=mi; j< ncol; j++)  {
         exptrace = gsl_vector_get(rowexprData,j);
-        exppeek = gsl_vector_get(rowexprData,j+1);
+        exppeek = gsl_vector_get(rowexprData,j);
         if ( exppeek > topofdborder ) {
             continue;
         }

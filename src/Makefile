@@ -30,5 +30,4 @@ seq2exp.o : Tools.h ExprPredictor.h seq2exp.cpp
 
 seq2exp : Tools.o ExprPredictor.o seq2exp.o 
 	$(CC) -o $@ Tools.o ExprPredictor.o seq2exp.o $(LFLAGS) 
-
-
+	mv $(BIN) ../

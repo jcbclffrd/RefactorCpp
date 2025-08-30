@@ -634,7 +634,7 @@ void printFile4( ofstream& os, const ExprPar& par , ExprPredictor& jRMSE ) ;
 void printFile5( ofstream& os, const ExprPar& par , ExprPredictor& jRMSE ) ;
 void printFiled( ofstream& os, const ExprPar& par , ExprPredictor& jRMSE ) const;
 void printFilePar_KfoldCV( ofstream& os, const ExprPar& par , ExprPredictor& jRMSE ) const;
-
+double compAvgCorrborder9(  ExprPar& par ); 
 int createccdata();
 int createccdata2();
 int load( const string& fila );  
@@ -699,30 +699,7 @@ void compvar(vector< double >& vars);
 vector< vector< Site > > seqSitesm1d1;
  vector< vector< vector< Site > > > d;
 private:
-/* explanation of const..................................................
-    class Class1
-    { void Method1();
-      int MemberVariable1;}
 
-has no explicit parameters at all to ‘Method1’ but calling it in an object in this class might alter ‘MemberVariable1’ of that object if ‘Method1’ happened to be, for example,
-
-    void Class1::Method1()
-    { MemberVariable1=MemberVariable1+1;}
-
-The solution to that is to put ‘const’ after the parameter list like
-
-    class Class2
-    { void Method1() const;
-      int MemberVariable1;}
-
-which will ban Method1 in Class2 from being anything which can attempt to alter any member variables in the object.,.........................
-One cannot simply avoid using ‘const’ on class methods because ‘const’ is infectious. An object which has been made ‘const’, for example by being passed as a parameter in the ‘const &’ way, can only have those of its methods that are explicitly declared ‘const’ called (because C++’s calling system is too simple work out which methods not explicitly declared ‘const’ don’t actually change anything). Therefore class methods that don’t change the object are best declared ‘const’ so that they are not prevented from being called when an object of the class has somehow acquired ‘const’ status. In later versions of C++, an object or variable which has been declared ‘const’ can be converted to changeable by use of ‘const_cast’ which is a similar bodge to ‘mutable’ and using it likewise renders ‘const’ virtually useless. 
-*/
- //const vector< SiteVec >& seqSites;		// the extracted sites for alntl sequences
-    // training data
-/*
-    const vector< SiteVec >& seqSites;		// the extracted sites for all sequences
-*/
     const vector< int >& seqLengths;           // lengths of all sequences
   Matrix& exprData;		// expressions of the corresponding sequences across multiple conditions         
     const vector< Motif >& motifs;		// TF binding motifs
@@ -768,6 +745,7 @@ double compAvgCorrborder( ExprPar& par ) ;
     double compAvgCrossCorr( const ExprPar& par ) const;    // the average cross correlation -based similarity
 double compAvgCorrborder2(  ExprPar& par ) ;
 double compAvgCorrborder8(  ExprPar& par ); 
+
     // minimize the objective function, using the current model parameters as initial values
     int simplex_minimize( ExprPar& par_result, double& obj_result ) ;//const;	// simplex	
     int gradient_minimize( ExprPar& par_result, double& obj_result ) ;// const;	// gradient: BFGS or conjugate gradient
