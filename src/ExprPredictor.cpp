@@ -3730,7 +3730,7 @@ fo.close();
 void ExprPredictor::printFile3c( ofstream& os, const ExprPar& par , ExprPredictor& jRMSE ) // came from printFile3b above 8/1/2025
 {
   
-ofstream fo( "oData/format.tex",ios::app );
+ofstream fo( "oData/format.tex") ; //,ios::app );
 int j=0;
 vector< Site > tsites;
 vector< Site > tsitesbot;
@@ -3743,71 +3743,85 @@ gsl_vector *transition_Indicesbs = gsl_vector_alloc(nrow);  // vector that hold 
 gsl_vector *transition_Indicests = gsl_vector_alloc(nrow);  // vector that hold the ti for each gene..
 int tits;
 int tibs;
-for (int i=0; i<nrow;i++) {
-    vector< double > reD;
-    reD = factorExprData.getRow(i);
-    int mi;
-    gsl_vector *rowexprData = gsl_vector_alloc(ncol);
-    rowexprData = vector2gsl(reD);
-    mi = gsl_vector_max_index(rowexprData);
-    double m;
-    m = gsl_vector_max(rowexprData);      // the max function starts from the left and works its way to the right (starts with lowest indices)
-    double exptrace;
-    double exppeek;
-    tits = 0;
-    tibs =0;
-    if( m < bottomofdborder ) {                           // this is a security check to make sure borders exist
-    gsl_vector_set(transition_Indicests, i , tits);  // here ti = NULL
-    gsl_vector_set(transition_Indicesbs, i , tibs);
-    break;
-}
-else{
-    for (int j=mi; j< ncol; j++)  {
-        exptrace = gsl_vector_get(rowexprData,j);
-        exppeek = gsl_vector_get(rowexprData,j+1);
-        if ( exppeek > topofdborder ) {
-            continue;
+    {
+            // gsl_vector_set(transition_Indicest, 0, 0);
+            // gsl_vector_set(transition_Indicesb, 0, 0);
+            gsl_vector_set(transition_Indicests, 0, 0);
+            gsl_vector_set(transition_Indicesbs, 0, 0);
+        for( int i = 1; i < nrow; i++){
+            // gsl_vector_set(transition_Indicest, i, 0);
+            // gsl_vector_set(transition_Indicesb, i, 0);
+            gsl_vector_set(transition_Indicests, i, 0);
+            gsl_vector_set(transition_Indicesbs, i, 0);
+
         }
-        else {
-            if( exptrace == exppeek) { continue; }  // peek ahead to make sure trace is not on a saddle point (plateu)
-            if(exppeek < topofdborder ) {
-                tits =j;
-                gsl_vector_set(transition_Indicests, i , tits);
-                int counter=0;
-                for(;;) {
-                    exptrace = gsl_vector_get(rowexprData,tits+counter);
-                    counter++;
-                    exppeek = gsl_vector_get(rowexprData,tits + counter);
-                    if ( exppeek > bottomofdborder ) {
-                        continue;
-                    }
-                    else {
-                        tibs=tits + counter;
-                        gsl_vector_set(transition_Indicesbs, i , tibs);
-                        break;
-                    }//else
-                } // for(;;)
-                int minindex;
-                minindex = gsl_vector_min_index(rowexprData);
-                if (tits == 0) {
-                    tits = minindex;            //some sequences are all zero or all the same value, which causes segemtation fault
-                    tibs = minindex;
-                    gsl_vector_set(transition_Indicests, i , tits);
-                    gsl_vector_set(transition_Indicesbs, i , tibs);
-                }
-                break;
-            } // if < topofdborder
-        }//  else
-    }// for j
-}// else
-}//for i
+    }
+// for (int i=0; i<nrow;i++) {
+//     vector< double > reD;
+//     reD = factorExprData.getRow(i);
+//     int mi;
+//     gsl_vector *rowexprData = gsl_vector_alloc(ncol);
+//     rowexprData = vector2gsl(reD);
+//     mi = gsl_vector_max_index(rowexprData);
+//     double m;
+//     m = gsl_vector_max(rowexprData);      // the max function starts from the left and works its way to the right (starts with lowest indices)
+//     double exptrace;
+//     double exppeek;
+//     tits = 0;
+//     tibs =0;
+//     if( m < bottomofdborder ) {                           // this is a security check to make sure borders exist
+//     gsl_vector_set(transition_Indicests, i , tits);  // here ti = NULL
+//     gsl_vector_set(transition_Indicesbs, i , tibs);
+//     break;
+// }
+// else{
+//     for (int j=mi; j< ncol; j++)  {
+//         exptrace = gsl_vector_get(rowexprData,j);
+//         exppeek = gsl_vector_get(rowexprData,j);
+//                 // exppeek = gsl_vector_get(rowexprData,j+1);
+//         if ( exppeek > topofdborder ) {
+//             continue;
+//         }
+//         else {
+//             if( exptrace == exppeek) { continue; }  // peek ahead to make sure trace is not on a saddle point (plateu)
+//             if(exppeek < topofdborder ) {
+//                 tits =j;
+//                 gsl_vector_set(transition_Indicests, i , tits);
+//                 int counter=0;
+//                 for(;;) {
+//                     exptrace = gsl_vector_get(rowexprData,tits+counter);
+//                     counter++;
+//                     exppeek = gsl_vector_get(rowexprData,tits + counter);
+//                     if ( exppeek > bottomofdborder ) {
+//                         continue;
+//                     }
+//                     else {
+//                         tibs=tits + counter;
+//                         gsl_vector_set(transition_Indicesbs, i , tibs);
+//                         break;
+//                     }//else
+//                 } // for(;;)
+//                 int minindex;
+//                 minindex = gsl_vector_min_index(rowexprData);
+//                 if (tits == 0) {
+//                     tits = minindex;            //some sequences are all zero or all the same value, which causes segemtation fault
+//                     tibs = minindex;
+//                     gsl_vector_set(transition_Indicests, i , tits);
+//                     gsl_vector_set(transition_Indicesbs, i , tibs);
+//                 }
+//                 break;
+//             } // if < topofdborder
+//         }//  else
+//     }// for j
+// }// else
+// }//for i
 for(int m = 0; m < seqSites.size(); m++ ) {
     tsites = seqSites[m];
     tsitesbot = seqSitesbot[m]  ;
     
 j=0;
 int jjj=10000;
-for(int i = 0; i < ExprPredictor::seqsy[m].size(); i++ ) {
+for(int i = 0; i < ExprPredictor::seqsy[m].size()-20; i++ ) {
     if( i == 0 ) { fo << "&&" ; continue; }
     for( int ii = 0; ii < seqSitesm1[m].size(); ii++ ) {
         if ( i== seqSitesm1[m][ii].start ) {
@@ -6234,439 +6248,542 @@ for (int i=0; i<nrow;i++) {
     return .5;
 }
 
-double ExprPredictor::compAvgCorrborder8(  ExprPar& par )
+double ExprPredictor::compAvgCorrborder8(ExprPar &par)
 {
     double expmin = .15;
     double expmax = .65;
     double bottomofdborder = .15;
     double topofdborder = .65;
-    vector< int > initint;
-    for ( int ab = 0; ab < nSeqs() ; ab++) {
-        AllBorders.push_back( initint );
+    vector<int> initint;
+    for (int ab = 0; ab < nSeqs(); ab++)
+    {
+        AllBorders.push_back(initint);
     }
     par_model = par;
     AllBorders.clear();
     AllData.clear();
-    ExprFunc* func = createExprFunc( par );
-    vector< double > corrs;
-    vector< string > rowLabels(0);
-    vector< string > colLabels(0);
-    vector< vector< double > > data(0) ;
-    ifstream fin( file.c_str() );
-    if ( !fin ) {
+    ExprFunc *func = createExprFunc(par);
+    vector<double> corrs;
+    vector<string> rowLabels(0);
+    vector<string> colLabels(0);
+    vector<vector<double>> data(0);
+    ifstream fin(file.c_str());
+    if (!fin)
+    {
         return RET_ERROR;
     }
-    gsl_rng* rng;
+    gsl_rng *rng;
     gsl_rng_env_setup();
-    const gsl_rng_type * TT = gsl_rng_default;	// create rng type
-    rng = gsl_rng_alloc( TT );
-    gsl_rng_set( rng, 12345 );		// set the seed equal to simulTime(0)
-    double  rand_site_index;	// from ~/C++exercises/Bins/Mscan/wtmx_scanmc1116.cpp
+    const gsl_rng_type *TT = gsl_rng_default; // create rng type
+    rng = gsl_rng_alloc(TT);
+    gsl_rng_set(rng, 12345); // set the seed equal to simulTime(0)
+    double rand_site_index;  // from ~/C++exercises/Bins/Mscan/wtmx_scanmc1116.cpp
     rowLabels.clear();
     colLabels.clear();
     data.clear();
     string line, first, label;
-    getline( fin, line );
-    stringstream ss( line );
+    getline(fin, line);
+    stringstream ss(line);
     ss >> first;
-    while ( ss >> label ) {
-        colLabels.push_back( label );
+    while (ss >> label)
+    {
+        colLabels.push_back(label);
     }
-    while ( !fin.eof() ) {
+    while (!fin.eof())
+    {
         string line;
-        getline( fin, line );
-        if ( line.empty() ) continue;
-        stringstream ss( line );
+        getline(fin, line);
+        if (line.empty())
+            continue;
+        stringstream ss(line);
         string name;
         ss >> name;
-        rowLabels.push_back( name );
+        rowLabels.push_back(name);
         double val;
-        vector< double > vals;
-        while ( ss >> val ){
-            vals.push_back( val  );
-        }// while ss >> val
-        data.push_back( vals );
+        vector<double> vals;
+        while (ss >> val)
+        {
+            vals.push_back(val);
+        } // while ss >> val
+        data.push_back(vals);
     }
-    Matrix data1( data );
+    Matrix data1(data);
     Matrix f = factorExprData;
     exprData = data;
     Matrix e = data;
     int nrow = exprData.nRows();
-    int ncol =exprData.nCols();
+    int ncol = exprData.nCols();
     cout << " exprData nrows " << nrow << endl;
-    gsl_vector *transition_Indicesb = gsl_vector_alloc(nrow);  // vector that hold the ti for each gene..
-    gsl_vector *transition_Indicest = gsl_vector_alloc(nrow);  // vector that hold the ti for each gene..
+    gsl_vector *transition_Indicesb = gsl_vector_alloc(nrow); // vector that hold the ti for each gene..
+    gsl_vector *transition_Indicest = gsl_vector_alloc(nrow); // vector that hold the ti for each gene..
+    gsl_vector *transition_Indicesbs = gsl_vector_alloc(nrow); // vector that hold the ti for each gene..
+    gsl_vector *transition_Indicests = gsl_vector_alloc(nrow); // vector that hold the ti for each gene..
     int tit;
-    int tib;
-    for (int i=0; i<nrow;i++) {
-        vector< double > reD;
-        reD = exprData.getRow(i);
-        int mi;
-        gsl_vector *rowexprData = gsl_vector_alloc(ncol);
-        rowexprData = vector2gsl(reD);
-        mi = gsl_vector_max_index(rowexprData);
-        double m;
-        m = gsl_vector_max(rowexprData);      // the max function starts from the left and works its way to the right (starts with lowest indices)
-        double exptrace;
-        double exppeek;
-        tit = 0;
-        tib =0;
-        if( m < bottomofdborder ) {                           // this is a security check to make sure borders exist
-        gsl_vector_set(transition_Indicest, i , tit);  // here ti = NULL
-        gsl_vector_set(transition_Indicesb, i , tib);
-        break;
+    int tib; 
+    int tits;
+    int tibs; 
+    {
+            gsl_vector_set(transition_Indicest, 0, 0);
+            gsl_vector_set(transition_Indicesb, 0, 0);
+            gsl_vector_set(transition_Indicests, 0, 0);
+            gsl_vector_set(transition_Indicesbs, 0, 0);
+        for( int i = 1; i < nrow; i++){
+            gsl_vector_set(transition_Indicest, i, 0);
+            gsl_vector_set(transition_Indicesb, i, 0);
+            gsl_vector_set(transition_Indicests, i, 0);
+            gsl_vector_set(transition_Indicesbs, i, 0);
+        }
     }
-    else{
-        for (int j=mi; j< ncol; j++)  {
-            exptrace = gsl_vector_get(rowexprData,j);
-            exppeek = gsl_vector_get(rowexprData,j+1);
-            if ( exppeek > topofdborder ) {
-                continue;
-            }
-            else {
-                if( exptrace == exppeek) { continue; }  // peek ahead to make sure trace is not on a saddle point (plateu)
-                if(exppeek < topofdborder ) {
-                    tit =j;
-                    gsl_vector_set(transition_Indicest, i , tit);
-                    int counter=0;
-                    for(;;) {
-                        exptrace = gsl_vector_get(rowexprData,tit+counter);
-                        counter++;
-                        exppeek = gsl_vector_get(rowexprData,tit + counter);
-                        if ( exppeek > bottomofdborder ) {
-                            continue;
-                        }
-                        else {
-                            tib=tit + counter;
-                            gsl_vector_set(transition_Indicesb, i , tib);
-                            break;
-                        }//else
-                    } // for(;;)
-                    int minindex;
-                    minindex = gsl_vector_min_index(rowexprData);
-                    if (tit == 0) {
-                        tit = minindex;            //some sequences are all zero or all the same value, which causes segemtation fault
-                        tib = minindex;
-                        gsl_vector_set(transition_Indicest, i , tit);
-                        gsl_vector_set(transition_Indicesb, i , tib);
-                    }
-                    break;
-                } // if < topofdborder
-            }//  else
-        }// for j
-    }// else
-}// for i
-vector< double > predictedExprs;
-vector< double > observedExprs;
-double totalSim = 0;
-double rms = 0;
-cout << "transitionindicest "<< endl;
-for (int i=0; i<nrow;i++) {
-    cout << endl << gsl_vector_get(transition_Indicest,i) << endl;
-}
-cout << "transitionindicesb " << endl;
-for (int i=0; i<nrow;i++) {
-    cout << endl << gsl_vector_get(transition_Indicesb,i) << endl;
-}
-int c = 0;
-for ( int i = 0; i < nSeqs(); i++ ) {  // should be i < nSeqs()
-c++;
-cell.push_back( gsl_vector_get(transition_Indicest,i) );
-cell.push_back( gsl_vector_get(transition_Indicesb,i) );
-if( gsl_vector_get(transition_Indicest,i) == 0 ) {
-    double predicted = 0;   // func->predictExpr( seqSites[ i ], seqLengths[i], concs );
-    predictedExprs.push_back( predicted );
-    double observed = .7;  // .7 was for debugging, needs to change
-    AllBorders[i].push_back( 0 );
-    observedExprs.push_back( observed );
-    rms += abs( predicted - 0 );
-}
-if( gsl_vector_get(transition_Indicesb,i) == 0 ) {
-    double predicted = 0;   // func->predictExpr( seqSites[ i ], seqLengths[i], concs );
-    predictedExprs.push_back( predicted );
-    AllBorders[i].push_back( 0 );
-    double observed = .7;  // .7 was for debugging, needs to change
-    observedExprs.push_back( observed );
-    rms += abs( predicted - 0 );
-}
-else{
-    vector< double > concst = factorExprData.getCol( gsl_vector_get(transition_Indicest,i) );
-    anny.annotydorsal( seqsy[ i], seqSites[ i ], f, e, *func , gsl_vector_get(transition_Indicest,i), ExprPredictor::seqNmes[i]);
-    AllBorders[i].push_back( gsl_vector_get(transition_Indicest,i) );
-    double predictedt = func->predictExpr( seqSites[ i ], seqLengths[i], concst );
-    predictedExprs.push_back( predictedt );
-    double observedt = exprData( i, gsl_vector_get(transition_Indicest,i) );
-    observedExprs.push_back( observedt );
-    rms += ( predictedt - observedt )*( predictedt - observedt );
-    vector< double > concs2 = factorExprData.getCol( gsl_vector_get(transition_Indicesb,i) );
-    anny.annotydorsal( seqsy[ i], seqSitesbot[ i ], f, e, *func , gsl_vector_get(transition_Indicesb,i), ExprPredictor::seqNmes[i]);
-    AllBorders[i].push_back( gsl_vector_get(transition_Indicesb,i) );
-    double predicted2 = func->predictExpr( seqSitesbot[ i ], seqLengths[i], concs2 );
-    predictedExprs.push_back( predicted2 );
-    double observed2 = exprData( i, gsl_vector_get(transition_Indicesb,i) );
-    observedExprs.push_back( observed2 );
-    rms += ( predicted2 - observed2 )*( predicted2 - observed2 );   // this needs to be our target expression (on or off ?  or .5, shouldn't it be .5)
-}
-}  // for i
-// remember the transition indices start at 0, while the spreadsheet labels the columns starting at 1.
-bottomofdborder = .5;
-topofdborder = .8;
-nrow = factorExprData.nRows();
-ncol =factorExprData.nCols();
-gsl_vector *transition_Indicesbs = gsl_vector_alloc(nrow);  // vector that hold the ti for each gene..
-gsl_vector *transition_Indicests = gsl_vector_alloc(nrow);  // vector that hold the ti for each gene..
-int tits;
-int tibs;
-for (int i=0; i<nrow;i++) {
-    vector< double > reD;
-    reD = factorExprData.getRow(i);
-    int mi;
-    gsl_vector *rowexprData = gsl_vector_alloc(ncol);
-    rowexprData = vector2gsl(reD);
-    mi = gsl_vector_max_index(rowexprData);
-    double m;
-    m = gsl_vector_max(rowexprData);      // the max function starts from the left and works its way to the right (starts with lowest indices)
-    double exptrace;
-    double exppeek;
-    tits = 0;
-    tibs =0;
-    if( m < bottomofdborder ) {                           // this is a security check to make sure borders exist
-    gsl_vector_set(transition_Indicests, i , tits);  // here ti = NULL
-    gsl_vector_set(transition_Indicesbs, i , tibs);
-    break;
-}
-else{
-    for (int j=mi; j< ncol; j++)  {
-        exptrace = gsl_vector_get(rowexprData,j);
-        exppeek = gsl_vector_get(rowexprData,j); // removed j+1 to j to see if rhoexp1.tab works
-        if ( exppeek > topofdborder ) {
-            continue;
+
+    // for (int i = 0; i < nrow; i++)
+    // {
+    //     vector<double> reD;
+    //     reD = exprData.getRow(i);
+    //     int mi;
+    //     gsl_vector *rowexprData = gsl_vector_alloc(ncol);
+    //     rowexprData = vector2gsl(reD);
+    //     mi = gsl_vector_max_index(rowexprData);
+    //     double m;
+    //     m = gsl_vector_max(rowexprData); // the max function starts from the left and works its way to the right (starts with lowest indices)
+    //     double exptrace;
+    //     double exppeek;
+    //     tit = 0;
+    //     tib = 0;
+    //     if (m < bottomofdborder)
+    //     {                                                // this is a security check to make sure borders exist
+    //         gsl_vector_set(transition_Indicest, i, tit); // here ti = NULL
+    //         gsl_vector_set(transition_Indicesb, i, tib);
+    //         break;
+    //     }
+    //     else
+    //     {
+    //         for (int j = mi; j < ncol; j++)
+    //         {
+    //             exptrace = gsl_vector_get(rowexprData, j);
+    //             exppeek = gsl_vector_get(rowexprData, j);
+    //             //  exppeek = gsl_vector_get(rowexprData,j+1);
+    //             if (exppeek > topofdborder)
+    //             {
+    //                 continue;
+    //             }
+    //             else
+    //             {
+    //                 if (exptrace == exppeek)
+    //                 {
+    //                     continue;
+    //                 } // peek ahead to make sure trace is not on a saddle point (plateu)
+    //                 if (exppeek < topofdborder)
+    //                 {
+    //                     tit = j;
+    //                     gsl_vector_set(transition_Indicest, i, tit);
+    //                     int counter = 0;
+    //                     for (;;)
+    //                     {
+    //                         exptrace = gsl_vector_get(rowexprData, tit + counter);
+    //                         counter++;
+    //                         exppeek = gsl_vector_get(rowexprData, tit + counter);
+    //                         if (exppeek > bottomofdborder)
+    //                         {
+    //                             continue;
+    //                         }
+    //                         else
+    //                         {
+    //                             tib = tit + counter;
+    //                             gsl_vector_set(transition_Indicesb, i, tib);
+    //                             break;
+    //                         } // else
+    //                     } // for(;;)
+    //                     int minindex;
+    //                     minindex = gsl_vector_min_index(rowexprData);
+    //                     if (tit == 0)
+    //                     {
+    //                         tit = minindex; // some sequences are all zero or all the same value, which causes segemtation fault
+    //                         tib = minindex;
+    //                         gsl_vector_set(transition_Indicest, i, tit);
+    //                         gsl_vector_set(transition_Indicesb, i, tib);
+    //                     }
+    //                     break;
+    //                 } // if < topofdborder
+    //             } //  else
+    //         } // for j
+    //     } // else
+    // } // for i
+    vector<double> predictedExprs;
+    vector<double> observedExprs;
+    double totalSim = 0;
+    double rms = 0;
+    cout << "transitionindicest " << endl;
+    for (int i = 0; i < nrow; i++)
+    {
+        cout << endl
+             << gsl_vector_get(transition_Indicest, i) << endl;
+    }
+    cout << "transitionindicesb " << endl;
+    for (int i = 0; i < nrow; i++)
+    {
+        cout << endl
+             << gsl_vector_get(transition_Indicesb, i) << endl;
+    }
+    int c = 0;
+    for (int i = 0; i < nSeqs(); i++)
+    { // should be i < nSeqs()
+        c++;
+        cell.push_back(gsl_vector_get(transition_Indicest, i));
+        cell.push_back(gsl_vector_get(transition_Indicesb, i));
+        if (gsl_vector_get(transition_Indicest, i) == 0)
+        {
+            double predicted = 0; // func->predictExpr( seqSites[ i ], seqLengths[i], concs );
+            predictedExprs.push_back(predicted);
+            double observed = .7; // .7 was for debugging, needs to change
+            AllBorders[i].push_back(0);
+            observedExprs.push_back(observed);
+            rms += abs(predicted - 0);
         }
-        else {
-            if( exptrace == exppeek) { continue; }  // peek ahead to make sure trace is not on a saddle point (plateu)
-            if(exppeek < topofdborder ) {
-                tits =j;
-                gsl_vector_set(transition_Indicests, i , tits);
-                int counter=0;
-                for(;;) {
-                    exptrace = gsl_vector_get(rowexprData,tits+counter);
-                    counter++;
-                    exppeek = gsl_vector_get(rowexprData,tits + counter);
-                    if ( exppeek > bottomofdborder ) {
-                        continue;
-                    }
-                    else {
-                        tibs=tits + counter;
-                        gsl_vector_set(transition_Indicesbs, i , tibs);
-                        break;
-                    }//else
-                } // for(;;)
-                int minindex;
-                minindex = gsl_vector_min_index(rowexprData);
-                if (tits == 0) {
-                    tits = minindex;            //some sequences are all zero or all the same value, which causes segemtation fault
-                    tibs = minindex;
-                    gsl_vector_set(transition_Indicests, i , tits);
-                    gsl_vector_set(transition_Indicesbs, i , tibs);
-                }
-                break;
-            } // if < topofdborder
-        }//  else
-    }// for j
-}// else
-}//for i
-cout << "transitionindicests "<< endl << gsl_vector_get(transition_Indicests,2) << endl;
-cout << "transitionindicesbs " << endl <<gsl_vector_get(transition_Indicesbs,2) << endl;
-for ( int i = 0; i < nSeqs(); i++ ) {  // given the neuroectoderm structures, we calculate (estimate?) the mesoderms structure.
-vector< double > concsm = factorExprData.getCol( gsl_vector_get(transition_Indicests,2) );
-vector<double > concheck=factorExprData.getCol( gsl_vector_get(transition_Indicest,i) );  // CHECK GENE i for nee, if not don't run annoty3.
-if( concheck[2]!=0){ seqSitesm1[ i ]=seqSites[i];AllBorders[i].push_back( gsl_vector_get(transition_Indicests,2) );
-double predictedt = func->predictExpr( seqSitesm1[ i ], seqLengths[i], concsm );
-predictedExprs.push_back( predictedt );
-double observedt = exprData( i, gsl_vector_get(transition_Indicests,2) );
-observedExprs.push_back( observedt );
-rms += ( predictedt - observedt )*( predictedt - observedt );
-continue; } // don't add more snail sites, if i is not an nee.
-anny.annoty3( seqsy[ i], seqSitesm1[ i ], f, e, *func , gsl_vector_get(transition_Indicests,2), ExprPredictor::seqNmes[i],i, seqSites[i]);
-double predictedt = func->predictExpr( seqSitesm1[ i ], seqLengths[i], concsm );
-predictedExprs.push_back( predictedt );
-AllBorders[i].push_back( gsl_vector_get(transition_Indicests,2) );
-double observedt = exprData( i, gsl_vector_get(transition_Indicests,2) );
-observedExprs.push_back( observedt );
-rms += ( predictedt - observedt )*( predictedt - observedt );
-}
-for ( int i = 0; i < nSeqs(); i++ ) {
-    vector< double > concsm = factorExprData.getCol( gsl_vector_get(transition_Indicesbs,2) );
-    vector<double > concheck=factorExprData.getCol( gsl_vector_get(transition_Indicesb,i) );  // CHECK GENE i for nee, if not don't run annoty3.
-    if( concheck[2]!=0){seqSitesm2[ i ]=seqSitesbot[i];AllBorders[i].push_back( gsl_vector_get(transition_Indicesbs,2) );
-    double predictedt = func->predictExpr( seqSitesm2[ i ], seqLengths[i], concsm );
-    predictedExprs.push_back( predictedt );
-    double observedt = exprData( i, gsl_vector_get(transition_Indicesbs,2));
-    observedExprs.push_back( observedt );
-    rms += ( predictedt - observedt )*( predictedt - observedt );
-    continue; } // don't add more snail sites, if i is not an nee.
-    anny.annoty3( seqsy[ i], seqSitesm2[ i ], f, e, *func , gsl_vector_get(transition_Indicesbs,2), ExprPredictor::seqNmes[i],i, seqSites[i]);
-    double predictedt = func->predictExpr( seqSitesm2[ i ], seqLengths[i], concsm );
-    predictedExprs.push_back( predictedt );
-    AllBorders[i].push_back( gsl_vector_get(transition_Indicesbs,2) );
-    double observedt = exprData( i, gsl_vector_get(transition_Indicesbs,2));
-    observedExprs.push_back( observedt );
-    rms += ( predictedt - observedt )*( predictedt - observedt );
-}
-Matrix f2 =factorExprData;
-vector< double > temp = factorExprData.getRow(0);
-double noise = .1;
-for( int i = 0 ; i < temp.size(); i++ ){
-    temp[i]= temp[i] + noise;
-    if(temp[i] > 1 ) { temp[i] = 1 ;}
-}
-f2.setRow(0,temp);
-for ( int i = 0; i < nSeqs(); i++ ) {  // should be i < nSeqs()
-if( gsl_vector_get(transition_Indicest,i) == 0 ) {
-    double predicted = 0;   // func->predictExpr( seqSites[ i ], seqLengths[i], concs );
-    predictedExprs.push_back( predicted );
-    AllBorders[i].push_back( 0 );
-    double observed = .7;  // .7 was for debugging, needs to change
-    observedExprs.push_back( observed );
-    rms += abs( predicted - 0 );
-}
-if( gsl_vector_get(transition_Indicesb,i) == 0 ) {
-    double predicted = 0;   // func->predictExpr( seqSites[ i ], seqLengths[i], concs );
-    predictedExprs.push_back( predicted );
-    AllBorders[i].push_back( 0 );
-    double observed = .7;  // .7 was for debugging, needs to change
-    observedExprs.push_back( observed );
-    rms += abs( predicted - 0 );
-}
-else{
-    vector< double > concst = f2.getCol( gsl_vector_get(transition_Indicest,i) );
-    anny.annotydorsal( seqsy[ i], seqSitesf2[ i ], f2, e, *func , gsl_vector_get(transition_Indicest,i), ExprPredictor::seqNmes[i]);
-    AllBorders[i].push_back( gsl_vector_get(transition_Indicest,i) );
-    double predictedt = func->predictExpr( seqSitesf2[ i ], seqLengths[i], concst );
-    predictedExprs.push_back( predictedt );
-    double observedt = exprData( i, gsl_vector_get(transition_Indicest,i) );
-    observedExprs.push_back( observedt );
-    rms += ( predictedt - observedt )*( predictedt - observedt );
-    vector< double > concs2 = f2.getCol( gsl_vector_get(transition_Indicesb,i) );
-    anny.annotydorsal( seqsy[ i], seqSitesbotf2[ i ], f, e, *func , gsl_vector_get(transition_Indicesb,i), ExprPredictor::seqNmes[i]);
-    AllBorders[i].push_back( gsl_vector_get(transition_Indicesb,i) );
-    double predicted2 = func->predictExpr( seqSitesbotf2[ i ], seqLengths[i], concs2 );
-    predictedExprs.push_back( predicted2 );
-    double observed2 = exprData( i, gsl_vector_get(transition_Indicesb,i) );
-    observedExprs.push_back( observed2 );
-    rms += ( predicted2 - observed2 )*( predicted2 - observed2 );   // this needs to be our target expression (on or off ?  or .5, shouldn't it be .5)
-}
-}  // for i
-// remember the transition indices start at 0, while the spreadsheet labels the columns starting at 1.
-bottomofdborder = .5;
-topofdborder = .8;
-nrow = factorExprData.nRows();
-ncol =factorExprData.nCols();
-for (int i=0; i<nrow;i++) {
-    vector< double > reD;
-    reD = factorExprData.getRow(i);
-    int mi;
-    gsl_vector *rowexprData = gsl_vector_alloc(ncol);
-    rowexprData = vector2gsl(reD);
-    mi = gsl_vector_max_index(rowexprData);
-    double m;
-    m = gsl_vector_max(rowexprData);      // the max function starts from the left and works its way to the right (starts with lowest indices)
-    double exptrace;
-    double exppeek;
-    tits = 0;
-    tibs =0;
-    if( m < bottomofdborder ) {                           // this is a security check to make sure borders exist
-    gsl_vector_set(transition_Indicests, i , tits);  // here ti = NULL
-    gsl_vector_set(transition_Indicesbs, i , tibs);
-    break;
-}
-else{
-    for (int j=mi; j< ncol; j++)  {
-        exptrace = gsl_vector_get(rowexprData,j);
-        exppeek = gsl_vector_get(rowexprData,j);
-        if ( exppeek > topofdborder ) {
-            continue;
+        if (gsl_vector_get(transition_Indicesb, i) == 0)
+        {
+            double predicted = 0; // func->predictExpr( seqSites[ i ], seqLengths[i], concs );
+            predictedExprs.push_back(predicted);
+            AllBorders[i].push_back(0);
+            double observed = .7; // .7 was for debugging, needs to change
+            observedExprs.push_back(observed);
+            rms += abs(predicted - 0);
         }
-        else {
-            if( exptrace == exppeek) { continue; }  // peek ahead to make sure trace is not on a saddle point (plateu)
-            if(exppeek < topofdborder ) {
-                tits =j;
-                gsl_vector_set(transition_Indicests, i , tits);
-                int counter=0;
-                for(;;) {
-                    exptrace = gsl_vector_get(rowexprData,tits+counter);
-                    counter++;
-                    exppeek = gsl_vector_get(rowexprData,tits + counter);
-                    if ( exppeek > bottomofdborder ) {
-                        continue;
-                    }
-                    else {
-                        tibs=tits + counter;
-                        gsl_vector_set(transition_Indicesbs, i , tibs);
-                        break;
-                    }//else
-                } // for(;;)
-                int minindex;
-                minindex = gsl_vector_min_index(rowexprData);
-                if (tits == 0) {
-                    tits = minindex;            //some sequences are all zero or all the same value, which causes segemtation fault
-                    tibs = minindex;
-                    gsl_vector_set(transition_Indicests, i , tits);
-                    gsl_vector_set(transition_Indicesbs, i , tibs);
-                }
-                break;
-            } // if < topofdborder
-        }//  else
-    }// for j
-}// else
-}//for i
-for ( int i = 0; i < nSeqs(); i++ ) {  // given the neuroectoderm structures, we calculate (estimate?) the mesoderms structure.
-vector< double > concsm = f2.getCol( gsl_vector_get(transition_Indicests,2) );  // here we retrieve the snail border..
-vector<double > concheck=factorExprData.getCol( gsl_vector_get(transition_Indicest,i) );  // CHECK GENE i for nee, if not don't run annoty3.
-if( concheck[2]!=0){
-    seqSitesm1f2[ i ]=seqSitesf2[i]; AllBorders[i].push_back( gsl_vector_get(transition_Indicests,2) );
-    double predictedt = func->predictExpr( seqSitesm1f2[ i ], seqLengths[i], concsm );
-    predictedExprs.push_back( predictedt );
-    double observedt = exprData( i, gsl_vector_get(transition_Indicests,2) );
-    observedExprs.push_back( observedt );
-    rms += ( predictedt - observedt )*( predictedt - observedt );
-    continue; } // don't add more snail sites, if i is not an nee.
-    anny.annoty3( seqsy[ i], seqSitesm1f2[ i ], f2, e, *func , gsl_vector_get(transition_Indicests,2), ExprPredictor::seqNmes[i],i, seqSitesf2[i]);
-    double predictedt = func->predictExpr( seqSitesm1f2[ i ], seqLengths[i], concsm );
-    predictedExprs.push_back( predictedt );
-    AllBorders[i].push_back( gsl_vector_get(transition_Indicests,2) );
-    double observedt = exprData( i, gsl_vector_get(transition_Indicests,2) );
-    observedExprs.push_back( observedt );
-    rms += ( predictedt - observedt )*( predictedt - observedt );
-}
-for ( int i = 0; i < nSeqs(); i++ ) {
-    vector< double > concsm = f2.getCol( gsl_vector_get(transition_Indicesbs,2) );
-    vector<double > concheck=factorExprData.getCol( gsl_vector_get(transition_Indicesb,i) );  // CHECK GENE i for nee, if not don't run annoty3.
-    if( concheck[2]!=0){ seqSitesm2f2[ i ]=seqSitesbotf2[i]; AllBorders[i].push_back( gsl_vector_get(transition_Indicesbs,2) );
-    double predictedt = func->predictExpr( seqSitesm2f2[ i ], seqLengths[i], concsm );
-    predictedExprs.push_back( predictedt );
-    double observedt = exprData( i, gsl_vector_get(transition_Indicesbs,2));
-    observedExprs.push_back( observedt );
-    rms += ( predictedt - observedt )*( predictedt - observedt );
-    continue; } // don't add more snail sites, if i is not an nee.
-    anny.annoty3( seqsy[ i], seqSitesm2f2[ i ], f2, e, *func , gsl_vector_get(transition_Indicesbs,2), ExprPredictor::seqNmes[i],i, seqSitesf2[i]);
-    AllBorders[i].push_back( gsl_vector_get(transition_Indicesbs,2) );
-    double predictedt = func->predictExpr( seqSitesm2f2[ i ], seqLengths[i], concsm );
-    predictedExprs.push_back( predictedt );
-    double observedt = exprData( i, gsl_vector_get(transition_Indicesbs,2));
-    observedExprs.push_back( observedt );
-    rms += ( predictedt - observedt )*( predictedt - observedt );
-}
-AllData.push_back(seqSites ) ;
-AllData.push_back(seqSitesbot ) ;
-AllData.push_back( seqSitesm1) ;
-AllData.push_back(seqSitesm2 ) ;
-AllData.push_back(seqSitesf2 ) ;
-AllData.push_back(seqSitesbotf2 ) ;
-AllData.push_back(seqSitesm1f2 ) ;
-AllData.push_back(seqSitesm2f2 ) ;
-obj_model = sqrt(rms/(nSeqs()*8));  // this was set for testing of correlation matrix of parameters, 10.5.11
-return  obj_model;  // rms;
+        else
+        {
+            vector<double> concst = factorExprData.getCol(gsl_vector_get(transition_Indicest, i));
+            anny.annotydorsal(seqsy[i], seqSites[i], f, e, *func, gsl_vector_get(transition_Indicest, i), ExprPredictor::seqNmes[i]);
+            AllBorders[i].push_back(gsl_vector_get(transition_Indicest, i));
+            double predictedt = func->predictExpr(seqSites[i], seqLengths[i], concst);
+            predictedExprs.push_back(predictedt);
+            double observedt = exprData(i, gsl_vector_get(transition_Indicest, i));
+            observedExprs.push_back(observedt);
+            rms += (predictedt - observedt) * (predictedt - observedt);
+            vector<double> concs2 = factorExprData.getCol(gsl_vector_get(transition_Indicesb, i));
+            anny.annotydorsal(seqsy[i], seqSitesbot[i], f, e, *func, gsl_vector_get(transition_Indicesb, i), ExprPredictor::seqNmes[i]);
+            AllBorders[i].push_back(gsl_vector_get(transition_Indicesb, i));
+            double predicted2 = func->predictExpr(seqSitesbot[i], seqLengths[i], concs2);
+            predictedExprs.push_back(predicted2);
+            double observed2 = exprData(i, gsl_vector_get(transition_Indicesb, i));
+            observedExprs.push_back(observed2);
+            rms += (predicted2 - observed2) * (predicted2 - observed2); // this needs to be our target expression (on or off ?  or .5, shouldn't it be .5)
+        }
+    } // for i
+    // remember the transition indices start at 0, while the spreadsheet labels the columns starting at 1.
+    bottomofdborder = 100.5;
+    topofdborder = .8;
+    // nrow = factorExprData.nRows();
+    // ncol = factorExprData.nCols();
+    // gsl_vector *transition_Indicesbs = gsl_vector_alloc(nrow); // vector that hold the ti for each gene..
+    // gsl_vector *transition_Indicests = gsl_vector_alloc(nrow); // vector that hold the ti for each gene..
+    // int tits;
+    // int tibs;
+    // for (int i = 0; i < nrow; i++)
+    // {
+    //     vector<double> reD;
+    //     reD = factorExprData.getRow(i);
+    //     int mi;
+    //     gsl_vector *rowexprData = gsl_vector_alloc(ncol);
+    //     rowexprData = vector2gsl(reD);
+    //     mi = gsl_vector_max_index(rowexprData);
+    //     double m;
+    //     m = gsl_vector_max(rowexprData); // the max function starts from the left and works its way to the right (starts with lowest indices)
+    //     double exptrace;
+    //     double exppeek;
+    //     tits = 0;
+    //     tibs = 0;
+    //     if (m < bottomofdborder)
+    //     {                                                  // this is a security check to make sure borders exist
+    //         gsl_vector_set(transition_Indicests, i, tits); // here ti = NULL
+    //         gsl_vector_set(transition_Indicesbs, i, tibs);
+    //         break;
+    //     }
+    //     else
+    //     {
+    //         for (int j = mi; j < ncol; j++)
+    //         {
+    //             exptrace = gsl_vector_get(rowexprData, j);
+    //             exppeek = gsl_vector_get(rowexprData, j); // removed j+1 to j to see if rhoexp1.tab works
+    //             if (exppeek > topofdborder)
+    //             {
+    //                 continue;
+    //             }
+    //             else
+    //             {
+    //                 if (exptrace == exppeek)
+    //                 {
+    //                     continue;
+    //                 } // peek ahead to make sure trace is not on a saddle point (plateu)
+    //                 if (exppeek < topofdborder)
+    //                 {
+    //                     tits = j;
+    //                     gsl_vector_set(transition_Indicests, i, tits);
+    //                     int counter = 0;
+    //                     for (;;)
+    //                     {
+    //                         exptrace = gsl_vector_get(rowexprData, tits + counter);
+    //                         counter++;
+    //                         exppeek = gsl_vector_get(rowexprData, tits + counter);
+    //                         if (exppeek > bottomofdborder)
+    //                         {
+    //                             continue;
+    //                         }
+    //                         else
+    //                         {
+    //                             tibs = tits + counter;
+    //                             gsl_vector_set(transition_Indicesbs, i, tibs);
+    //                             break;
+    //                         } // else
+    //                     } // for(;;)
+    //                     int minindex;
+    //                     minindex = gsl_vector_min_index(rowexprData);
+    //                     if (tits == 0)
+    //                     {
+    //                         tits = minindex; // some sequences are all zero or all the same value, which causes segemtation fault
+    //                         tibs = minindex;
+    //                         gsl_vector_set(transition_Indicests, i, tits);
+    //                         gsl_vector_set(transition_Indicesbs, i, tibs);
+    //                     }
+    //                     break;
+    //                 } // if < topofdborder
+    //             } //  else
+    //         } // for j
+    //     } // else
+    // } // for i
+    cout << "transitionindicests " << endl
+         << gsl_vector_get(transition_Indicests, 2) << endl;
+    cout << "transitionindicesbs " << endl
+         << gsl_vector_get(transition_Indicesbs, 2) << endl;
+    for (int i = 0; i < nSeqs(); i++)
+    { // given the neuroectoderm structures, we calculate (estimate?) the mesoderms structure.
+        vector<double> concsm = factorExprData.getCol(gsl_vector_get(transition_Indicests, 2));
+        vector<double> concheck = factorExprData.getCol(gsl_vector_get(transition_Indicest, i)); // CHECK GENE i for nee, if not don't run annoty3.
+        if (concheck[2] != 0)
+        {
+            seqSitesm1[i] = seqSites[i];
+            AllBorders[i].push_back(gsl_vector_get(transition_Indicests, 2));
+            double predictedt = func->predictExpr(seqSitesm1[i], seqLengths[i], concsm);
+            predictedExprs.push_back(predictedt);
+            double observedt = exprData(i, gsl_vector_get(transition_Indicests, 2));
+            observedExprs.push_back(observedt);
+            rms += (predictedt - observedt) * (predictedt - observedt);
+            continue;
+        } // don't add more snail sites, if i is not an nee.
+        anny.annoty3(seqsy[i], seqSitesm1[i], f, e, *func, gsl_vector_get(transition_Indicests, 2), ExprPredictor::seqNmes[i], i, seqSites[i]);
+        double predictedt = func->predictExpr(seqSitesm1[i], seqLengths[i], concsm);
+        predictedExprs.push_back(predictedt);
+        AllBorders[i].push_back(gsl_vector_get(transition_Indicests, 2));
+        double observedt = exprData(i, gsl_vector_get(transition_Indicests, 2));
+        observedExprs.push_back(observedt);
+        rms += (predictedt - observedt) * (predictedt - observedt);
+    }
+    for (int i = 0; i < nSeqs(); i++)
+    {
+        vector<double> concsm = factorExprData.getCol(gsl_vector_get(transition_Indicesbs, 2));
+        vector<double> concheck = factorExprData.getCol(gsl_vector_get(transition_Indicesb, i)); // CHECK GENE i for nee, if not don't run annoty3.
+        if (concheck[2] != 0)
+        {
+            seqSitesm2[i] = seqSitesbot[i];
+            AllBorders[i].push_back(gsl_vector_get(transition_Indicesbs, 2));
+            double predictedt = func->predictExpr(seqSitesm2[i], seqLengths[i], concsm);
+            predictedExprs.push_back(predictedt);
+            double observedt = exprData(i, gsl_vector_get(transition_Indicesbs, 2));
+            observedExprs.push_back(observedt);
+            rms += (predictedt - observedt) * (predictedt - observedt);
+            continue;
+        } // don't add more snail sites, if i is not an nee.
+        anny.annoty3(seqsy[i], seqSitesm2[i], f, e, *func, gsl_vector_get(transition_Indicesbs, 2), ExprPredictor::seqNmes[i], i, seqSites[i]);
+        double predictedt = func->predictExpr(seqSitesm2[i], seqLengths[i], concsm);
+        predictedExprs.push_back(predictedt);
+        AllBorders[i].push_back(gsl_vector_get(transition_Indicesbs, 2));
+        double observedt = exprData(i, gsl_vector_get(transition_Indicesbs, 2));
+        observedExprs.push_back(observedt);
+        rms += (predictedt - observedt) * (predictedt - observedt);
+    }
+    Matrix f2 = factorExprData;
+    vector<double> temp = factorExprData.getRow(0);
+    double noise = .1;
+    for (int i = 0; i < temp.size(); i++)
+    {
+        temp[i] = temp[i] + noise;
+        if (temp[i] > 1)
+        {
+            temp[i] = 1;
+        }
+    }
+    f2.setRow(0, temp);
+    for (int i = 0; i < nSeqs(); i++)
+    { // should be i < nSeqs()
+        if (gsl_vector_get(transition_Indicest, i) == 0)
+        {
+            double predicted = 0; // func->predictExpr( seqSites[ i ], seqLengths[i], concs );
+            predictedExprs.push_back(predicted);
+            AllBorders[i].push_back(0);
+            double observed = .7; // .7 was for debugging, needs to change
+            observedExprs.push_back(observed);
+            rms += abs(predicted - 0);
+        }
+        if (gsl_vector_get(transition_Indicesb, i) == 0)
+        {
+            double predicted = 0; // func->predictExpr( seqSites[ i ], seqLengths[i], concs );
+            predictedExprs.push_back(predicted);
+            AllBorders[i].push_back(0);
+            double observed = .7; // .7 was for debugging, needs to change
+            observedExprs.push_back(observed);
+            rms += abs(predicted - 0);
+        }
+        else
+        {
+            vector<double> concst = f2.getCol(gsl_vector_get(transition_Indicest, i));
+            anny.annotydorsal(seqsy[i], seqSitesf2[i], f2, e, *func, gsl_vector_get(transition_Indicest, i), ExprPredictor::seqNmes[i]);
+            AllBorders[i].push_back(gsl_vector_get(transition_Indicest, i));
+            double predictedt = func->predictExpr(seqSitesf2[i], seqLengths[i], concst);
+            predictedExprs.push_back(predictedt);
+            double observedt = exprData(i, gsl_vector_get(transition_Indicest, i));
+            observedExprs.push_back(observedt);
+            rms += (predictedt - observedt) * (predictedt - observedt);
+            vector<double> concs2 = f2.getCol(gsl_vector_get(transition_Indicesb, i));
+            anny.annotydorsal(seqsy[i], seqSitesbotf2[i], f, e, *func, gsl_vector_get(transition_Indicesb, i), ExprPredictor::seqNmes[i]);
+            AllBorders[i].push_back(gsl_vector_get(transition_Indicesb, i));
+            double predicted2 = func->predictExpr(seqSitesbotf2[i], seqLengths[i], concs2);
+            predictedExprs.push_back(predicted2);
+            double observed2 = exprData(i, gsl_vector_get(transition_Indicesb, i));
+            observedExprs.push_back(observed2);
+            rms += (predicted2 - observed2) * (predicted2 - observed2); // this needs to be our target expression (on or off ?  or .5, shouldn't it be .5)
+        }
+    } // for i
+    // remember the transition indices start at 0, while the spreadsheet labels the columns starting at 1.
+    bottomofdborder = .5;
+    topofdborder = .8;
+    nrow = factorExprData.nRows();
+    ncol = factorExprData.nCols();
+    // for (int i = 0; i < nrow; i++)
+    // {
+    //     vector<double> reD;
+    //     reD = factorExprData.getRow(i);
+    //     int mi;
+    //     gsl_vector *rowexprData = gsl_vector_alloc(ncol);
+    //     rowexprData = vector2gsl(reD);
+    //     mi = gsl_vector_max_index(rowexprData);
+    //     double m;
+    //     m = gsl_vector_max(rowexprData); // the max function starts from the left and works its way to the right (starts with lowest indices)
+    //     double exptrace;
+    //     double exppeek;
+    //     tits = 0;
+    //     tibs = 0;
+    //     if (m < bottomofdborder)
+    //     {                                                  // this is a security check to make sure borders exist
+    //         gsl_vector_set(transition_Indicests, i, tits); // here ti = NULL
+    //         gsl_vector_set(transition_Indicesbs, i, tibs);
+    //         break;
+    //     }
+    //     else
+    //     {
+    //         for (int j = mi; j < ncol; j++)
+    //         {
+    //             exptrace = gsl_vector_get(rowexprData, j);
+    //             exppeek = gsl_vector_get(rowexprData, j);
+    //             if (exppeek > topofdborder)
+    //             {
+    //                 continue;
+    //             }
+    //             else
+    //             {
+    //                 if (exptrace == exppeek)
+    //                 {
+    //                     continue;
+    //                 } // peek ahead to make sure trace is not on a saddle point (plateu)
+    //                 if (exppeek < topofdborder)
+    //                 {
+    //                     tits = j;
+    //                     gsl_vector_set(transition_Indicests, i, tits);
+    //                     int counter = 0;
+    //                     for (;;)
+    //                     {
+    //                         exptrace = gsl_vector_get(rowexprData, tits + counter);
+    //                         counter++;
+    //                         exppeek = gsl_vector_get(rowexprData, tits + counter);
+    //                         if (exppeek > bottomofdborder)
+    //                         {
+    //                             continue;
+    //                         }
+    //                         else
+    //                         {
+    //                             tibs = tits + counter;
+    //                             gsl_vector_set(transition_Indicesbs, i, tibs);
+    //                             break;
+    //                         } // else
+    //                     } // for(;;)
+    //                     int minindex;
+    //                     minindex = gsl_vector_min_index(rowexprData);
+    //                     if (tits == 0)
+    //                     {
+    //                         tits = minindex; // some sequences are all zero or all the same value, which causes segemtation fault
+    //                         tibs = minindex;
+    //                         gsl_vector_set(transition_Indicests, i, tits);
+    //                         gsl_vector_set(transition_Indicesbs, i, tibs);
+    //                     }
+    //                     break;
+    //                 } // if < topofdborder
+    //             } //  else
+    //         } // for j
+    //     } // else
+    // } // for i
+    for (int i = 0; i < nSeqs(); i++)
+    {                                                                                            // given the neuroectoderm structures, we calculate (estimate?) the mesoderms structure.
+        vector<double> concsm = f2.getCol(gsl_vector_get(transition_Indicests, 2));              // here we retrieve the snail border..
+        vector<double> concheck = factorExprData.getCol(gsl_vector_get(transition_Indicest, i)); // CHECK GENE i for nee, if not don't run annoty3.
+        if (concheck[2] != 0)
+        {
+            seqSitesm1f2[i] = seqSitesf2[i];
+            AllBorders[i].push_back(gsl_vector_get(transition_Indicests, 2));
+            double predictedt = func->predictExpr(seqSitesm1f2[i], seqLengths[i], concsm);
+            predictedExprs.push_back(predictedt);
+            double observedt = exprData(i, gsl_vector_get(transition_Indicests, 2));
+            observedExprs.push_back(observedt);
+            rms += (predictedt - observedt) * (predictedt - observedt);
+            continue;
+        } // don't add more snail sites, if i is not an nee.
+        anny.annoty3(seqsy[i], seqSitesm1f2[i], f2, e, *func, gsl_vector_get(transition_Indicests, 2), ExprPredictor::seqNmes[i], i, seqSitesf2[i]);
+        double predictedt = func->predictExpr(seqSitesm1f2[i], seqLengths[i], concsm);
+        predictedExprs.push_back(predictedt);
+        AllBorders[i].push_back(gsl_vector_get(transition_Indicests, 2));
+        double observedt = exprData(i, gsl_vector_get(transition_Indicests, 2));
+        observedExprs.push_back(observedt);
+        rms += (predictedt - observedt) * (predictedt - observedt);
+    }
+    for (int i = 0; i < nSeqs(); i++)
+    {
+        vector<double> concsm = f2.getCol(gsl_vector_get(transition_Indicesbs, 2));
+        vector<double> concheck = factorExprData.getCol(gsl_vector_get(transition_Indicesb, i)); // CHECK GENE i for nee, if not don't run annoty3.
+        if (concheck[2] != 0)
+        {
+            seqSitesm2f2[i] = seqSitesbotf2[i];
+            AllBorders[i].push_back(gsl_vector_get(transition_Indicesbs, 2));
+            double predictedt = func->predictExpr(seqSitesm2f2[i], seqLengths[i], concsm);
+            predictedExprs.push_back(predictedt);
+            double observedt = exprData(i, gsl_vector_get(transition_Indicesbs, 2));
+            observedExprs.push_back(observedt);
+            rms += (predictedt - observedt) * (predictedt - observedt);
+            continue;
+        } // don't add more snail sites, if i is not an nee.
+        anny.annoty3(seqsy[i], seqSitesm2f2[i], f2, e, *func, gsl_vector_get(transition_Indicesbs, 2), ExprPredictor::seqNmes[i], i, seqSitesf2[i]);
+        AllBorders[i].push_back(gsl_vector_get(transition_Indicesbs, 2));
+        double predictedt = func->predictExpr(seqSitesm2f2[i], seqLengths[i], concsm);
+        predictedExprs.push_back(predictedt);
+        double observedt = exprData(i, gsl_vector_get(transition_Indicesbs, 2));
+        observedExprs.push_back(observedt);
+        rms += (predictedt - observedt) * (predictedt - observedt);
+    }
+    AllData.push_back(seqSites);
+    AllData.push_back(seqSitesbot);
+    AllData.push_back(seqSitesm1);
+    AllData.push_back(seqSitesm2);
+    AllData.push_back(seqSitesf2);
+    AllData.push_back(seqSitesbotf2);
+    AllData.push_back(seqSitesm1f2);
+    AllData.push_back(seqSitesm2f2);
+    obj_model = sqrt(rms / (nSeqs() * 8)); // this was set for testing of correlation matrix of parameters, 10.5.11
+    return obj_model;                      // rms;
 }
 double ExprPredictor::compAvgCorrborder(  ExprPar& par )
 {

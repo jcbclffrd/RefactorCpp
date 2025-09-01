@@ -491,6 +491,9 @@ cout<< "out" << endl;
             seqLengths[i] = seqs[i].size();
         }
     }
+
+
+
     seqSitesbot.clear(); 
     seqSitesm1.clear(); 
     seqSitesm2.clear();
@@ -538,7 +541,7 @@ cout<< "out" << endl;
         predictor->printPar(predictor->getPar());
     }
     to.close();
-    exit(0);
+    // exit(0);
     ofstream fout( outFile.c_str() );
     if ( !fout ) {
         cerr << "Cannot open file " << outFile << endl;
@@ -549,7 +552,7 @@ cout<< "out" << endl;
         vector< double > observedExprs = exprData2.getRow( i );
         vector< double > targetExprsm1;
         vector< double > dorsalExprs = factorExprData.getRow( 2 );
-        predictor2->predict(seqSitesm1[ i ], seqLengths[i], targetExprsm1 );
+        predictor->predict(seqSitesm1[ i ], seqLengths[i], targetExprsm1 );
         fout << seqNames[i] << '\t';
         fout << observedExprs << endl;      
         fout << seqNames[i];
@@ -561,5 +564,6 @@ cout<< "out" << endl;
     fout << "Dl" << '\t';
     fout << dorsalExprs << endl;      
 }
+    fout.close();
 return 0;	
 }
